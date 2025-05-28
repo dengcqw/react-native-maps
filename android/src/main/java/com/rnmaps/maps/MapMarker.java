@@ -16,6 +16,7 @@ import android.animation.TypeEvaluator;
 
 import androidx.annotation.Nullable;
 
+import com.amap.api.maps.AMap;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -58,7 +59,9 @@ import java.util.Map;
 public class MapMarker extends MapFeature {
 
     private MarkerOptions markerOptions;
+    private  com.amap.api.maps.model.MarkerOptions gaodeMarkerOptions;
     private Marker marker;
+    private com.amap.api.maps.model.Marker amarker;
     private int width;
     private int height;
     private String identifier;
@@ -77,6 +80,7 @@ public class MapMarker extends MapFeature {
 
     private float markerHue = 0.0f; // should be between 0 and 360
     private BitmapDescriptor iconBitmapDescriptor;
+    private com.amap.api.maps.model.BitmapDescriptor gaodeIconBitmapDescriptor;
     private Bitmap iconBitmap;
 
     private float rotation = 0.0f;
@@ -123,7 +127,8 @@ public class MapMarker extends MapFeature {
                                 if (bitmap != null) {
                                     bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                                     iconBitmap = bitmap;
-                                    iconBitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
+                                    // 地图没有加载这个方法会崩溃
+                                    // iconBitmapDescriptor = BitmapDescriptorFactory.fromBitmap(bitmap);
                                 }
                             }
                         }
@@ -172,7 +177,7 @@ public class MapMarker extends MapFeature {
         setDraggable(options.isDraggable());
         setZIndex(Math.round(options.getZIndex()));
         setOpacity(options.getAlpha());
-        iconBitmapDescriptor = options.getIcon();
+        // iconBitmapDescriptor = options.getIcon();
     }
 
     private GenericDraweeHierarchy createDraweeHierarchy() {
@@ -191,6 +196,9 @@ public class MapMarker extends MapFeature {
         if (marker != null) {
             marker.setPosition(position);
         }
+        if (amarker != null) {
+            amarker.setPosition(AMapView.toGaodeLatLng(position));
+        }
         update(false);
     }
 
@@ -208,6 +216,9 @@ public class MapMarker extends MapFeature {
         if (marker != null) {
             marker.setTitle(title);
         }
+        if (amarker != null) {
+            amarker.setTitle(title);
+        }
         update(false);
     }
 
@@ -216,6 +227,9 @@ public class MapMarker extends MapFeature {
         if (marker != null) {
             marker.setSnippet(snippet);
         }
+        if (amarker != null) {
+            amarker.setSnippet(snippet);
+        }
         update(false);
     }
 
@@ -223,6 +237,9 @@ public class MapMarker extends MapFeature {
         this.rotation = rotation;
         if (marker != null) {
             marker.setRotation(rotation);
+        }
+        if (amarker != null) {
+            amarker.setRotateAngle(rotation);
         }
         update(false);
     }
@@ -240,6 +257,9 @@ public class MapMarker extends MapFeature {
         if (marker != null) {
             marker.setDraggable(draggable);
         }
+        if (amarker != null) {
+            amarker.setDraggable(draggable);
+        }
         update(false);
     }
 
@@ -248,6 +268,9 @@ public class MapMarker extends MapFeature {
         if (marker != null) {
             marker.setZIndex(zIndex);
         }
+        if (amarker != null) {
+            amarker.setZIndex(zIndex);
+        }
         update(false);
     }
 
@@ -255,6 +278,9 @@ public class MapMarker extends MapFeature {
         this.opacity = opacity;
         if (marker != null) {
             marker.setAlpha(opacity);
+        }
+        if (amarker != null) {
+            amarker.setAlpha(opacity);
         }
         update(false);
     }
@@ -271,6 +297,9 @@ public class MapMarker extends MapFeature {
         if (marker != null) {
             marker.setAnchor(anchorX, anchorY);
         }
+        if (amarker != null) {
+            amarker.setAnchor(anchorX, anchorY);
+        }
         update(false);
     }
 
@@ -281,6 +310,9 @@ public class MapMarker extends MapFeature {
         if (marker != null) {
             marker.setInfoWindowAnchor(calloutAnchorX, calloutAnchorY);
         }
+        if (amarker != null) {
+        }
+
         update(false);
     }
 
@@ -322,9 +354,22 @@ public class MapMarker extends MapFeature {
     }
 
     public void updateMarkerIcon() {
-        if (marker == null) return;
-
-        marker.setIcon(getIcon());
+        if (marker != null) {
+            Bitmap icon = getIcon();
+            if (icon == null) {
+                marker.setIcon(BitmapDescriptorFactory.defaultMarker(markerHue));
+            } else {
+                marker.setIcon(BitmapDescriptorFactory.fromBitmap(icon));
+            }
+        }
+        if (amarker != null) {
+            Bitmap icon = getIcon();
+            if (icon == null) {
+                amarker.setIcon(com.amap.api.maps.model.BitmapDescriptorFactory.defaultMarker(markerHue));
+            } else {
+                amarker.setIcon(com.amap.api.maps.model.BitmapDescriptorFactory.fromBitmap(icon));
+            }
+        }
     }
 
     public LatLng interpolate(float fraction, LatLng a, LatLng b) {
@@ -334,20 +379,33 @@ public class MapMarker extends MapFeature {
     }
 
     public void animateToCoodinate(LatLng finalPosition, Integer duration) {
+        if (marker == null || amarker == null) return;
+
         TypeEvaluator<LatLng> typeEvaluator = new TypeEvaluator<LatLng>() {
             @Override
             public LatLng evaluate(float fraction, LatLng startValue, LatLng endValue) {
                 return interpolate(fraction, startValue, endValue);
             }
         };
-        Property<Marker, LatLng> property = Property.of(Marker.class, LatLng.class, "position");
-        ObjectAnimator animator = ObjectAnimator.ofObject(
-                marker,
-                property,
-                typeEvaluator,
-                finalPosition);
-        animator.setDuration(duration);
-        animator.start();
+        if (marker != null) {
+            Property<Marker, LatLng> property = Property.of(Marker.class, LatLng.class, "position");
+            ObjectAnimator animator = ObjectAnimator.ofObject(
+                    marker,
+                    property,
+                    typeEvaluator,
+                    finalPosition);
+            animator.setDuration(duration);
+            animator.start();
+        } else if (amarker != null) {
+            Property<com.amap.api.maps.model.Marker, LatLng> property = Property.of(com.amap.api.maps.model.Marker.class, LatLng.class, "position");
+            ObjectAnimator animator = ObjectAnimator.ofObject(
+                    amarker,
+                    property,
+                    typeEvaluator,
+                    finalPosition);
+            animator.setDuration(duration);
+            animator.start();
+        }
     }
 
     public void setImage(String uri) {
@@ -381,6 +439,7 @@ public class MapMarker extends MapFeature {
 
         if (uri == null) {
             iconBitmapDescriptor = null;
+            gaodeIconBitmapDescriptor = null;
             update(true);
         } else if (uri.startsWith("http://") || uri.startsWith("https://") ||
                 uri.startsWith("file://") || uri.startsWith("asset://") || uri.startsWith("data:")) {
@@ -397,7 +456,7 @@ public class MapMarker extends MapFeature {
                     .build();
             logoHolder.setController(controller);
         } else {
-            iconBitmapDescriptor = getBitmapDescriptorByName(uri);
+            // iconBitmapDescriptor = getBitmapDescriptorByName(uri);
             int drawableId = getDrawableResourceByName(uri);
             iconBitmap = BitmapFactory.decodeResource(getResources(), drawableId);
             if (iconBitmap == null) { // VectorDrawable or similar
@@ -407,21 +466,25 @@ public class MapMarker extends MapFeature {
                 Canvas canvas = new Canvas(iconBitmap);
                 drawable.draw(canvas);
             }
-            if (this.markerManager != null) {
-                this.markerManager.getSharedIcon(uri).updateIcon(iconBitmapDescriptor, iconBitmap);
-            }
+            iconBitmapDescriptor = BitmapDescriptorFactory.fromBitmap(iconBitmap);
+            gaodeIconBitmapDescriptor = com.amap.api.maps.model.BitmapDescriptorFactory.fromBitmap(iconBitmap);
             update(true);
         }
     }
 
     public void setIconBitmapDescriptor(BitmapDescriptor bitmapDescriptor, Bitmap bitmap) {
         this.iconBitmapDescriptor = bitmapDescriptor;
+        this.gaodeIconBitmapDescriptor = com.amap.api.maps.model.BitmapDescriptorFactory.fromBitmap(bitmap);
         this.iconBitmap = bitmap;
         this.update(true);
     }
 
     public void setIconBitmap(Bitmap bitmap) {
         this.iconBitmap = bitmap;
+    }
+
+    public Bitmap getIconBitmap() {
+        return this.iconBitmap;
     }
 
     public MarkerOptions getMarkerOptions() {
@@ -431,6 +494,31 @@ public class MapMarker extends MapFeature {
 
         fillMarkerOptions(markerOptions);
         return markerOptions;
+    }
+
+    public com.amap.api.maps.model.MarkerOptions getGaodeMarkerOptions() {
+        if (gaodeMarkerOptions == null) {
+            gaodeMarkerOptions = new com.amap.api.maps.model.MarkerOptions();
+        }
+
+        gaodeMarkerOptions.position(AMapView.toGaodeLatLng(position));
+        if (anchorIsSet) gaodeMarkerOptions.anchor(anchorX, anchorY);
+        if (calloutAnchorIsSet) gaodeMarkerOptions.setInfoWindowOffset((int) calloutAnchorX, (int) calloutAnchorY);
+        gaodeMarkerOptions.title(title);
+        gaodeMarkerOptions.snippet(snippet);
+        gaodeMarkerOptions.rotateAngle(rotation);
+        gaodeMarkerOptions.setFlat(flat);
+        gaodeMarkerOptions.draggable(draggable);
+        gaodeMarkerOptions.zIndex(zIndex);
+        gaodeMarkerOptions.alpha(opacity);
+
+        Bitmap icon = getIcon();
+        if (icon == null) {
+            gaodeMarkerOptions.icon(com.amap.api.maps.model.BitmapDescriptorFactory.defaultMarker(markerHue));
+        } else {
+            gaodeMarkerOptions.icon(com.amap.api.maps.model.BitmapDescriptorFactory.fromBitmap(icon));
+        }
+        return gaodeMarkerOptions;
     }
 
     @Override
@@ -460,31 +548,41 @@ public class MapMarker extends MapFeature {
 
     @Override
     public Object getFeature() {
-        return marker;
+        if (marker != null) {
+            return marker;
+        } else {
+            return amarker;
+        }
     }
 
     @Override
     public void addToMap(Object collection) {
-        MarkerManager.Collection markerCollection = (MarkerManager.Collection) collection;
-        marker = markerCollection.addMarker(getMarkerOptions());
+        if (collection instanceof MarkerManager.Collection) {
+            MarkerManager.Collection markerCollection = (MarkerManager.Collection) collection;
+            marker = markerCollection.addMarker(getMarkerOptions());
+        } else if (collection instanceof AMap) {
+            amarker = ((AMap) collection).addMarker(getGaodeMarkerOptions());
+        }
         updateTracksViewChanges();
     }
 
     @Override
     public void removeFromMap(Object collection) {
-        if (marker == null) {
-            return;
+        if (marker != null) {
+            MarkerManager.Collection markerCollection = (MarkerManager.Collection) collection;
+            markerCollection.remove(marker);
+            marker = null;
+        } else if (amarker != null) {
+            amarker.remove();
+            amarker = null;
         }
-        MarkerManager.Collection markerCollection = (MarkerManager.Collection) collection;
-        markerCollection.remove(marker);
-        marker = null;
         updateTracksViewChanges();
     }
 
-    private BitmapDescriptor getIcon() {
+    private Bitmap getIcon() {
         if (hasCustomMarkerView) {
             // creating a bitmap from an arbitrary view
-            if (iconBitmapDescriptor != null) {
+            if (iconBitmap != null) {
                 Bitmap viewBitmap = createDrawable();
                 int width = Math.max(iconBitmap.getWidth(), viewBitmap.getWidth());
                 int height = Math.max(iconBitmap.getHeight(), viewBitmap.getHeight());
@@ -492,16 +590,15 @@ public class MapMarker extends MapFeature {
                 Canvas canvas = new Canvas(combinedBitmap);
                 canvas.drawBitmap(iconBitmap, 0, 0, null);
                 canvas.drawBitmap(viewBitmap, 0, 0, null);
-                return BitmapDescriptorFactory.fromBitmap(combinedBitmap);
+                return combinedBitmap;
             } else {
-                return BitmapDescriptorFactory.fromBitmap(createDrawable());
+                return createDrawable();
             }
-        } else if (iconBitmapDescriptor != null) {
+        } else if (iconBitmap != null) {
             // use local image as a marker
-            return iconBitmapDescriptor;
+            return iconBitmap;
         } else {
-            // render the default marker pin
-            return BitmapDescriptorFactory.defaultMarker(this.markerHue);
+            return null;
         }
     }
 
@@ -516,28 +613,41 @@ public class MapMarker extends MapFeature {
         options.draggable(draggable);
         options.zIndex(zIndex);
         options.alpha(opacity);
-        options.icon(getIcon());
+        Bitmap icon = getIcon();
+        if (icon == null) {
+            options.icon(BitmapDescriptorFactory.defaultMarker(markerHue));
+        } else {
+            options.icon(BitmapDescriptorFactory.fromBitmap(icon));
+        }
         return options;
     }
 
     public void update(boolean updateIcon) {
-        if (marker == null) {
-            return;
-        }
-
         if (updateIcon)
             updateMarkerIcon();
 
         if (anchorIsSet) {
-            marker.setAnchor(anchorX, anchorY);
+            if (marker != null) {
+                marker.setAnchor(anchorX, anchorY);
+            } else if (amarker != null) {
+                amarker.setAnchor(anchorX, anchorY);
+            }
         } else {
-            marker.setAnchor(0.5f, 1.0f);
+            if (marker != null) {
+                marker.setAnchor(0.5f, 1.0f);
+            } else if (amarker != null) {
+                amarker.setAnchor(0.5f, 1.0f);
+            }
         }
 
         if (calloutAnchorIsSet) {
-            marker.setInfoWindowAnchor(calloutAnchorX, calloutAnchorY);
+            if (marker != null) {
+                marker.setInfoWindowAnchor(calloutAnchorX, calloutAnchorY);
+            }
         } else {
-            marker.setInfoWindowAnchor(0.5f, 0);
+            if (marker != null) {
+                marker.setInfoWindowAnchor(0.5f, 0);
+            }
         }
     }
 
@@ -683,9 +793,9 @@ public class MapMarker extends MapFeature {
         }
     }
 
-    private BitmapDescriptor getBitmapDescriptorByName(String name) {
-        return BitmapDescriptorFactory.fromResource(getDrawableResourceByName(name));
-    }
+//    private BitmapDescriptor getBitmapDescriptorByName(String name) {
+//        return BitmapDescriptorFactory.fromResource(getDrawableResourceByName(name));
+//    }
 
     public static Map<String, Object> getExportedCustomBubblingEventTypeConstants() {
         MapBuilder.Builder<String, Object> builder = MapBuilder.builder();

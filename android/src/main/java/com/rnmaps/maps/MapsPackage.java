@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.module.model.ReactModuleInfo;
 import com.facebook.react.module.model.ReactModuleInfoProvider;
 import com.facebook.react.uimanager.ViewManager;
+import com.rnmaps.fabric.AMapViewManager;
 import com.rnmaps.fabric.CalloutManager;
 import com.rnmaps.fabric.CircleManager;
 import com.rnmaps.fabric.MapViewManager;
@@ -40,6 +41,7 @@ public class MapsPackage extends BaseReactPackage implements ReactPackage {
             new WMSTileManager(reactContext),
             new MapGradientPolylineManager(reactContext),
             new MapLocalTileManager(reactContext),
+            new AMapViewManager(reactContext),
             new MapHeatmapManager());
   }
 
@@ -66,6 +68,9 @@ public class MapsPackage extends BaseReactPackage implements ReactPackage {
     }
     if (MapViewManager.REACT_CLASS.equals(name)) {
       return new MapViewManager(reactContext);
+    }
+    if (AMapViewManager.REACT_CLASS.equals(name)) {
+      return new AMapViewManager(reactContext);
     }
     if (UrlTileManager.REACT_CLASS.equals(name)) {
       return new UrlTileManager(reactContext);
