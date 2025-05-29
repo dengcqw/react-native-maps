@@ -357,7 +357,9 @@ public class MapMarker extends MapFeature {
         if (marker != null) {
             Bitmap icon = getIcon();
             if (icon == null) {
-                marker.setIcon(BitmapDescriptorFactory.defaultMarker(markerHue));
+                if (markerHue == 0.01) {
+                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(markerHue));
+                }
             } else {
                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(icon));
             }
@@ -365,7 +367,9 @@ public class MapMarker extends MapFeature {
         if (amarker != null) {
             Bitmap icon = getIcon();
             if (icon == null) {
-                amarker.setIcon(com.amap.api.maps.model.BitmapDescriptorFactory.defaultMarker(markerHue));
+                if (markerHue == 0.01) {
+                    amarker.setIcon(com.amap.api.maps.model.BitmapDescriptorFactory.defaultMarker(markerHue));
+                }
             } else {
                 amarker.setIcon(com.amap.api.maps.model.BitmapDescriptorFactory.fromBitmap(icon));
             }
@@ -514,7 +518,9 @@ public class MapMarker extends MapFeature {
 
         Bitmap icon = getIcon();
         if (icon == null) {
-            gaodeMarkerOptions.icon(com.amap.api.maps.model.BitmapDescriptorFactory.defaultMarker(markerHue));
+            if (markerHue == 0.01) {
+                gaodeMarkerOptions.icon(com.amap.api.maps.model.BitmapDescriptorFactory.defaultMarker(markerHue));
+            }
         } else {
             gaodeMarkerOptions.icon(com.amap.api.maps.model.BitmapDescriptorFactory.fromBitmap(icon));
         }
@@ -615,7 +621,9 @@ public class MapMarker extends MapFeature {
         options.alpha(opacity);
         Bitmap icon = getIcon();
         if (icon == null) {
-            options.icon(BitmapDescriptorFactory.defaultMarker(markerHue));
+            if (markerHue > 0.01) {
+                options.icon(BitmapDescriptorFactory.defaultMarker(markerHue));
+            }
         } else {
             options.icon(BitmapDescriptorFactory.fromBitmap(icon));
         }
