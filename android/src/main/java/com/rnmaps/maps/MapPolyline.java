@@ -2,6 +2,9 @@ package com.rnmaps.maps;
 
 import android.content.Context;
 
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.model.PolylineOptions.LineJoinType;
+import com.amap.api.maps.model.PolylineOptions.LineCapType;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
@@ -30,16 +33,22 @@ public class MapPolyline extends MapFeature {
 
     private PolylineOptions polylineOptions;
     private Polyline polyline;
+    private com.amap.api.maps.model.PolylineOptions amapPolylineOptions;
+    private com.amap.api.maps.model.Polyline amapPolyline;
 
     private List<LatLng> coordinates;
+    private List<com.amap.api.maps.model.LatLng> amapCoordinates;
     private int color;
     private float width;
     private boolean tappable;
     private boolean geodesic;
     private float zIndex;
     private Cap lineCap = new RoundCap();
+    private LineCapType amapLineCap = LineCapType.LineCapRound;
     private ReadableArray patternValues;
+    private ReadableArray rawCoordinates;
     private List<PatternItem> pattern;
+    private String lineJoin;
 
     private List<StyleSpan> spans;
 
@@ -47,15 +56,34 @@ public class MapPolyline extends MapFeature {
         super(context);
     }
 
-    public void setCoordinates(ReadableArray coordinates) {
+
+    private void buildCoordinates(ReadableArray coordinates) {
         this.coordinates = new ArrayList<>(coordinates.size());
         for (int i = 0; i < coordinates.size(); i++) {
             ReadableMap coordinate = coordinates.getMap(i);
             this.coordinates.add(i,
                     new LatLng(coordinate.getDouble("latitude"), coordinate.getDouble("longitude")));
         }
+    }
+
+    private void buildAMapCoordinates(ReadableArray coordinates) {
+        this.amapCoordinates = new ArrayList<>(coordinates.size());
+        for (int i = 0; i < coordinates.size(); i++) {
+            ReadableMap coordinate = coordinates.getMap(i);
+            this.amapCoordinates.add(i,
+                    new com.amap.api.maps.model.LatLng(coordinate.getDouble("latitude"), coordinate.getDouble("longitude")));
+        }
+    }
+
+    public void setCoordinates(ReadableArray coordinates) {
         if (polyline != null) {
+            buildCoordinates(coordinates);
             polyline.setPoints(this.coordinates);
+        } else if (amapPolyline != null) {
+            buildAMapCoordinates(coordinates);
+            amapPolyline.setPoints(this.amapCoordinates);
+        } else {
+            this.rawCoordinates = coordinates;
         }
     }
 
@@ -63,24 +91,26 @@ public class MapPolyline extends MapFeature {
         this.color = color;
         if (polyline != null) {
             polyline.setColor(color);
+        } else if (amapPolyline != null) {
+            amapPolyline.setColor(color);
         }
     }
 
     public void setStrokeColors(ReadableArray strokeColors) {
-        List<StyleSpan> spans = new ArrayList<>();
-        for (int i = 0; i < strokeColors.size(); i++) {
-            StrokeStyle stroke;
+        if (polyline != null) {
+            List<StyleSpan> spans = new ArrayList<>();
+            for (int i = 0; i < strokeColors.size(); i++) {
+                StrokeStyle stroke;
 
-            if (i == 0) {
-                stroke = StrokeStyle.colorBuilder(strokeColors.getInt(i)).build();
-            } else {
-                stroke = StrokeStyle.gradientBuilder(strokeColors.getInt(i - 1), strokeColors.getInt(i)).build();
+                if (i == 0) {
+                    stroke = StrokeStyle.colorBuilder(strokeColors.getInt(i)).build();
+                } else {
+                    stroke = StrokeStyle.gradientBuilder(strokeColors.getInt(i - 1), strokeColors.getInt(i)).build();
+                }
+                spans.add(new StyleSpan(stroke));
             }
-            spans.add(new StyleSpan(stroke));
-        }
-        this.spans = spans;
-        if (polyline != null){
-        polyline.setSpans(spans);
+            this.spans = spans;
+            polyline.setSpans(spans);
         }
     }
 
@@ -88,6 +118,8 @@ public class MapPolyline extends MapFeature {
         this.width = width;
         if (polyline != null) {
             polyline.setWidth(width);
+        } else if (amapPolyline != null) {
+            amapPolyline.setWidth(width);
         }
     }
 
@@ -95,6 +127,8 @@ public class MapPolyline extends MapFeature {
         this.zIndex = zIndex;
         if (polyline != null) {
             polyline.setZIndex(zIndex);
+        } else if (amapPolyline != null) {
+            amapPolyline.setZIndex(zIndex);
         }
     }
 
@@ -103,20 +137,25 @@ public class MapPolyline extends MapFeature {
         if (polyline != null) {
             polyline.setClickable(tappable);
         }
+        // AMap not support
     }
 
     public void setGeodesic(boolean geodesic) {
         this.geodesic = geodesic;
         if (polyline != null) {
             polyline.setGeodesic(geodesic);
+        } else if (amapPolyline != null) {
+            amapPolyline.setGeodesic(geodesic);
         }
     }
 
-    public void setLineCap(Cap cap) {
-        this.lineCap = cap;
+    private void setLineCap(Cap cap) {
         if (polyline != null) {
             polyline.setStartCap(cap);
             polyline.setEndCap(cap);
+        } else if (amapPolyline != null) {
+            amapPolylineOptions.lineCapType(amapLineCap);
+            amapPolyline.setOptions(amapPolylineOptions);
         }
         this.applyPattern();
     }
@@ -127,7 +166,7 @@ public class MapPolyline extends MapFeature {
     }
 
     private void applyPattern() {
-        if (patternValues == null) {
+        if (polyline == null || patternValues == null) {
             return;
         }
         this.pattern = new ArrayList<>(patternValues.size());
@@ -158,9 +197,18 @@ public class MapPolyline extends MapFeature {
         }
         return polylineOptions;
     }
-
-    private PolylineOptions createPolylineOptions() {
-        PolylineOptions options = new PolylineOptions();
+    public com.amap.api.maps.model.PolylineOptions getAMapPolylineOptions() {
+        if (amapPolylineOptions == null) {
+            amapPolylineOptions = createAMapPolylineOptions();
+        }
+        return amapPolylineOptions;
+    }
+    private  PolylineOptions createPolylineOptions() {
+        PolylineOptions options = new  PolylineOptions();
+        if (rawCoordinates != null) {
+            buildCoordinates(rawCoordinates);
+            rawCoordinates = null;
+        }
         options.addAll(coordinates);
         options.color(color);
         options.width(width);
@@ -171,26 +219,54 @@ public class MapPolyline extends MapFeature {
         options.pattern(this.pattern);
         return options;
     }
+    private  com.amap.api.maps.model.PolylineOptions createAMapPolylineOptions() {
+        com.amap.api.maps.model.PolylineOptions options = new  com.amap.api.maps.model.PolylineOptions();
+        if (rawCoordinates != null) {
+            buildAMapCoordinates(rawCoordinates);
+            rawCoordinates = null;
+        }
+        options.addAll(amapCoordinates);
+        options.color(color);
+        options.width(width);
+        options.geodesic(geodesic);
+        options.zIndex(zIndex);
+        options.lineCapType(amapLineCap);
+        if (lineJoin != null) {
+            options.lineJoinType(buildAMapLineJoinType(lineJoin));
+            lineJoin = null;
+        }
+        return options;
+    }
 
     @Override
     public Object getFeature() {
-        return polyline;
+        if (polyline != null) {
+            return polyline;
+        } else {
+            return amapPolyline;
+        }
     }
 
     @Override
     public void addToMap(Object collection) {
-        PolylineManager.Collection polylineCollection = (PolylineManager.Collection) collection;
-        polyline = polylineCollection.addPolyline(getPolylineOptions());
-        polyline.setClickable(this.tappable);
-        if (spans != null){
-            polyline.setSpans(spans);
+        if (collection instanceof PolylineManager.Collection polylineCollection) {
+            polyline = polylineCollection.addPolyline(getPolylineOptions());
+            polyline.setClickable(this.tappable);
+            if (spans != null){
+                polyline.setSpans(spans);
+            }
+        } else if (collection instanceof AMap) {
+            ((AMap)collection).addPolyline(getAMapPolylineOptions());
         }
     }
 
     @Override
     public void removeFromMap(Object collection) {
-        PolylineManager.Collection polylineCollection = (PolylineManager.Collection) collection;
-        polylineCollection.remove(polyline);
+        if (amapPolyline != null) {
+            amapPolyline.remove();
+        } else if (collection instanceof PolylineManager.Collection polylineCollection) {
+            polylineCollection.remove(polyline);
+        }
     }
 
     public void setLineCap(String lineCap) {
@@ -198,15 +274,19 @@ public class MapPolyline extends MapFeature {
         switch (lineCap) {
             case "round":
                 cap = new RoundCap();
+                amapLineCap = LineCapType.LineCapRound;
                 break;
             case "square":
                 cap = new SquareCap();
+                amapLineCap = LineCapType.LineCapSquare;
                 break;
             case "butt":
             default:
                 cap = new ButtCap();
+                amapLineCap = LineCapType.LineCapButt;
                 break;
         }
+        this.lineCap = cap;
         setLineCap(cap);
     }
 
@@ -216,7 +296,7 @@ public class MapPolyline extends MapFeature {
         return builder.build();
     }
 
-    public void setLineJoin(String lineJoin) {
+    private int buildLineJoinType(String lineJoin) {
         int type;
         switch (lineJoin) {
             case "round":
@@ -230,8 +310,34 @@ public class MapPolyline extends MapFeature {
                 type = JointType.DEFAULT;
                 break;
         }
+        return type;
+    }
+
+    private LineJoinType buildAMapLineJoinType(String lineJoin) {
+        LineJoinType type;
+        switch (lineJoin) {
+            case "round":
+                type = LineJoinType.LineJoinRound;
+                break;
+            case "bevel":
+                type = LineJoinType.LineJoinBevel;
+                break;
+            case "miter":
+            default:
+                type = LineJoinType.LineJoinMiter;
+                break;
+        }
+        return type;
+    }
+
+    public void setLineJoin(String lineJoin) {
         if (polyline != null) {
-            polyline.setJointType(type);
+            polyline.setJointType(buildLineJoinType(lineJoin));
+        } else if (amapPolyline != null) {
+            amapPolylineOptions.lineJoinType(buildAMapLineJoinType(lineJoin));
+            amapPolyline.setOptions(amapPolylineOptions);
+        } else {
+            this.lineJoin = lineJoin;
         }
     }
 }
