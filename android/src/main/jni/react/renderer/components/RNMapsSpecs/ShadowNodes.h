@@ -73,6 +73,15 @@ using RNMapsMapViewShadowNode = ConcreteViewShadowNode<
     RNMapsMapViewEventEmitter,
     RNMapsMapViewState>;
 
+
+JSI_EXPORT extern const char RNMapsAMapViewComponentName[];
+
+using RNMapsAMapViewShadowNode = ConcreteViewShadowNode<
+        RNMapsMapViewComponentName,
+        RNMapsMapViewProps,
+        RNMapsMapViewEventEmitter,
+        RNMapsMapViewState>;
+
 JSI_EXPORT extern const char RNMapsMarkerComponentName[];
 
 /*

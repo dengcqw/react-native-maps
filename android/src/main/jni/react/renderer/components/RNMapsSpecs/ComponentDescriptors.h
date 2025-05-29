@@ -21,6 +21,7 @@ using RNMapsCircleComponentDescriptor = ConcreteComponentDescriptor<RNMapsCircle
 using RNMapsGoogleMapViewComponentDescriptor = ConcreteComponentDescriptor<RNMapsGoogleMapViewShadowNode>;
 using RNMapsGooglePolygonComponentDescriptor = ConcreteComponentDescriptor<RNMapsGooglePolygonShadowNode>;
 using RNMapsMapViewComponentDescriptor = ConcreteComponentDescriptor<RNMapsMapViewShadowNode>;
+using RNMapsAMapViewComponentDescriptor = ConcreteComponentDescriptor<RNMapsAMapViewShadowNode>;
 using RNMapsMarkerComponentDescriptor = ConcreteComponentDescriptor<RNMapsMarkerShadowNode>;
 using RNMapsOverlayComponentDescriptor = ConcreteComponentDescriptor<RNMapsOverlayShadowNode>;
 using RNMapsPolylineComponentDescriptor = ConcreteComponentDescriptor<RNMapsPolylineShadowNode>;
