@@ -113,6 +113,7 @@ public class AMapView extends com.amap.api.maps.MapView
     private boolean setPaddingDeferred = false;
     private boolean showUserLocation = false;
     private boolean followsUserLocation = false;
+    private boolean showMyLocationButton = false;
 
     private boolean showsTraffic = false;
 
@@ -496,6 +497,9 @@ public class AMapView extends com.amap.api.maps.MapView
         if (showScale != null) {
             setShowsScale(showScale);
         }
+        setShowsUserLocation(showUserLocation);
+        setFollowsUserLocation(followsUserLocation);
+        setShowsMyLocationButton(showMyLocationButton);
 
 //        markerManager = new MarkerManager(map);
 //        markerCollection = markerManager.newCollection();
@@ -896,10 +900,9 @@ public class AMapView extends com.amap.api.maps.MapView
     }
 
     public void setShowsMyLocationButton(boolean showMyLocationButton) {
+        this.showMyLocationButton = showMyLocationButton;
         if (map != null) {
-            if (hasPermissions() || !showMyLocationButton) {
-                map.getUiSettings().setMyLocationButtonEnabled(showMyLocationButton);
-            }
+            map.getUiSettings().setMyLocationButtonEnabled(showMyLocationButton);
         }
     }
 

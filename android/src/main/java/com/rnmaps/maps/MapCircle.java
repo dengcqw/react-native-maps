@@ -2,6 +2,7 @@ package com.rnmaps.maps;
 
 import android.content.Context;
 
+import com.amap.api.maps.AMap;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
 import com.google.android.gms.maps.model.Circle;
@@ -15,7 +16,9 @@ import java.util.Map;
 public class MapCircle extends MapFeature {
 
   private CircleOptions circleOptions;
+  private  com.amap.api.maps.model.CircleOptions amapCircleOptions;
   private Circle circle;
+  private com.amap.api.maps.model.Circle amapCircle;
 
   private LatLng center;
   private double radius;
@@ -33,6 +36,8 @@ public class MapCircle extends MapFeature {
     this.center = center;
     if (circle != null) {
       circle.setCenter(this.center);
+    } else if (amapCircle != null) {
+      amapCircle.setCenter(AMapView.toGaodeLatLng(this.center));
     }
   }
 
@@ -45,7 +50,9 @@ public class MapCircle extends MapFeature {
   public void setRadius(double radius) {
     this.radius = radius;
     if (circle != null) {
-      circle.setRadius(this.radius);
+      circle.setRadius(radius);
+    } else if (amapCircle != null) {
+      amapCircle.setRadius(radius);
     }
   }
 
@@ -53,6 +60,8 @@ public class MapCircle extends MapFeature {
     this.fillColor = color;
     if (circle != null) {
       circle.setFillColor(color);
+    } else if (amapCircle != null) {
+      amapCircle.setFillColor(color);
     }
   }
 
@@ -60,6 +69,8 @@ public class MapCircle extends MapFeature {
     this.strokeColor = color;
     if (circle != null) {
       circle.setStrokeColor(color);
+    } else if (amapCircle != null) {
+      amapCircle.setStrokeColor(color);
     }
   }
 
@@ -67,6 +78,8 @@ public class MapCircle extends MapFeature {
     this.strokeWidth = width;
     if (circle != null) {
       circle.setStrokeWidth(width);
+    } else if (amapCircle != null) {
+      amapCircle.setStrokeWidth(width);
     }
   }
 
@@ -74,6 +87,8 @@ public class MapCircle extends MapFeature {
     this.zIndex = zIndex;
     if (circle != null) {
       circle.setZIndex(zIndex);
+    } else if (amapCircle != null) {
+      amapCircle.setZIndex(zIndex);
     }
   }
 
@@ -82,6 +97,7 @@ public class MapCircle extends MapFeature {
     if (circle != null) {
       circle.setClickable(tappable);
     }
+    // AMap not support
   }
 
   public CircleOptions getCircleOptions() {
@@ -89,6 +105,24 @@ public class MapCircle extends MapFeature {
       circleOptions = createCircleOptions();
     }
     return circleOptions;
+  }
+
+  public com.amap.api.maps.model.CircleOptions getAMapCircleOptions() {
+    if (amapCircleOptions == null) {
+      amapCircleOptions = amapCreateCircleOptions();
+    }
+    return amapCircleOptions;
+  }
+
+  private com.amap.api.maps.model.CircleOptions amapCreateCircleOptions() {
+    com.amap.api.maps.model.CircleOptions options = new com.amap.api.maps.model.CircleOptions();
+    options.center(AMapView.toGaodeLatLng(center));
+    options.radius(radius);
+    options.fillColor(fillColor);
+    options.strokeColor(strokeColor);
+    options.strokeWidth(strokeWidth);
+    options.zIndex(zIndex);
+    return options;
   }
 
   private CircleOptions createCircleOptions() {
@@ -104,21 +138,30 @@ public class MapCircle extends MapFeature {
 
   @Override
   public Object getFeature() {
-    return circle;
+    if (circle != null) {
+      return circle;
+    } else {
+      return amapCircle;
+    }
   }
 
   @Override
   public void addToMap(Object collection) {
-    CircleManager.Collection circleCollection = (CircleManager.Collection) collection;
-    circle = circleCollection.addCircle(getCircleOptions());
+    if (collection instanceof CircleManager.Collection circleCollection) {
+        circle = circleCollection.addCircle(getCircleOptions());
+    } else if (collection instanceof com.amap.api.maps.AMap) {
+      amapCircle = ((AMap) collection).addCircle(getAMapCircleOptions());
+    }
   }
 
   @Override
   public void removeFromMap(Object collection) {
-    CircleManager.Collection circleCollection = (CircleManager.Collection) collection;
-    circleCollection.remove(circle);
+    if (amapCircle != null) {
+      amapCircle.remove();
+    } else if (collection instanceof CircleManager.Collection circleCollection) {
+        circleCollection.remove(circle);
+    }
   }
-
 
   public void setCenter(ReadableMap center) {
     setCenter(new LatLng(center.getDouble("latitude"), center.getDouble("longitude")));
