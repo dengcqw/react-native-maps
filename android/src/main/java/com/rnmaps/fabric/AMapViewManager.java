@@ -47,8 +47,8 @@ public class AMapViewManager extends ViewGroupManager<AMapView> implements RNMap
 
     public AMapViewManager(ReactApplicationContext context) {
         super(context);
-        MapsInitializer.updatePrivacyShow(context,true,true);
-        MapsInitializer.updatePrivacyAgree(context,true);
+//        MapsInitializer.updatePrivacyShow(context,true,true);
+//        MapsInitializer.updatePrivacyAgree(context,true);
     }
 
 

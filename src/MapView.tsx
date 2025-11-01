@@ -508,6 +508,11 @@ export type MapViewProps = ViewProps & {
    */
   provider?: Provider;
 
+  /*
+   * Android use 高德地图
+   */
+  useGaode?: boolean;
+
   /**
    * The region to be displayed by the map.
    * The region is defined by the center coordinates and the span of coordinates to display.
@@ -1143,6 +1148,7 @@ class MapView extends React.Component<MapViewProps, State> {
       maxZoomLevel,
       region,
       provider,
+      useGaode,
       children,
       customMapStyle,
       ...restProps
@@ -1197,7 +1203,7 @@ class MapView extends React.Component<MapViewProps, State> {
     }
 
     const childrenNodes = this.state.isReady ? children : null;
-    if (provider === 'amap' && Platform.OS === 'android') {
+    if (useGaode === true && Platform.OS === 'android') {
       return (
         <ProviderContext.Provider value={this.props.provider}>
           <FabricAMap {...props} ref={this.fabricMap}>
