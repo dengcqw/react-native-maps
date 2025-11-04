@@ -15,6 +15,8 @@
 
 namespace facebook::react {
 
+using RNMapsAMapViewState = StateData;
+
 using RNMapsCalloutState = StateData;
 
 using RNMapsCircleState = StateData;

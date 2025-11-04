@@ -18,6 +18,675 @@
 
 namespace facebook::react {
 
+enum class RNMapsAMapViewGoogleRenderer { LATEST, LEGACY };
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewGoogleRenderer &result) {
+  auto string = (std::string)value;
+  if (string == "LATEST") { result = RNMapsAMapViewGoogleRenderer::LATEST; return; }
+  if (string == "LEGACY") { result = RNMapsAMapViewGoogleRenderer::LEGACY; return; }
+  abort();
+}
+
+static inline std::string toString(const RNMapsAMapViewGoogleRenderer &value) {
+  switch (value) {
+    case RNMapsAMapViewGoogleRenderer::LATEST: return "LATEST";
+    case RNMapsAMapViewGoogleRenderer::LEGACY: return "LEGACY";
+  }
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewGoogleRenderer &value) {
+  return toString(value);
+}
+#endif
+enum class RNMapsAMapViewMapType { Hybrid, MutedStandard, None, Satellite, Standard, Terrain, SatelliteFlyover, HybridFlyover };
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewMapType &result) {
+  auto string = (std::string)value;
+  if (string == "hybrid") { result = RNMapsAMapViewMapType::Hybrid; return; }
+  if (string == "mutedStandard") { result = RNMapsAMapViewMapType::MutedStandard; return; }
+  if (string == "none") { result = RNMapsAMapViewMapType::None; return; }
+  if (string == "satellite") { result = RNMapsAMapViewMapType::Satellite; return; }
+  if (string == "standard") { result = RNMapsAMapViewMapType::Standard; return; }
+  if (string == "terrain") { result = RNMapsAMapViewMapType::Terrain; return; }
+  if (string == "satelliteFlyover") { result = RNMapsAMapViewMapType::SatelliteFlyover; return; }
+  if (string == "hybridFlyover") { result = RNMapsAMapViewMapType::HybridFlyover; return; }
+  abort();
+}
+
+static inline std::string toString(const RNMapsAMapViewMapType &value) {
+  switch (value) {
+    case RNMapsAMapViewMapType::Hybrid: return "hybrid";
+    case RNMapsAMapViewMapType::MutedStandard: return "mutedStandard";
+    case RNMapsAMapViewMapType::None: return "none";
+    case RNMapsAMapViewMapType::Satellite: return "satellite";
+    case RNMapsAMapViewMapType::Standard: return "standard";
+    case RNMapsAMapViewMapType::Terrain: return "terrain";
+    case RNMapsAMapViewMapType::SatelliteFlyover: return "satelliteFlyover";
+    case RNMapsAMapViewMapType::HybridFlyover: return "hybridFlyover";
+  }
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewMapType &value) {
+  return toString(value);
+}
+#endif
+enum class RNMapsAMapViewPaddingAdjustmentBehavior { Always, Automatic, Never };
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewPaddingAdjustmentBehavior &result) {
+  auto string = (std::string)value;
+  if (string == "always") { result = RNMapsAMapViewPaddingAdjustmentBehavior::Always; return; }
+  if (string == "automatic") { result = RNMapsAMapViewPaddingAdjustmentBehavior::Automatic; return; }
+  if (string == "never") { result = RNMapsAMapViewPaddingAdjustmentBehavior::Never; return; }
+  abort();
+}
+
+static inline std::string toString(const RNMapsAMapViewPaddingAdjustmentBehavior &value) {
+  switch (value) {
+    case RNMapsAMapViewPaddingAdjustmentBehavior::Always: return "always";
+    case RNMapsAMapViewPaddingAdjustmentBehavior::Automatic: return "automatic";
+    case RNMapsAMapViewPaddingAdjustmentBehavior::Never: return "never";
+  }
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewPaddingAdjustmentBehavior &value) {
+  return toString(value);
+}
+#endif
+enum class RNMapsAMapViewUserInterfaceStyle { System, Light, Dark };
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewUserInterfaceStyle &result) {
+  auto string = (std::string)value;
+  if (string == "system") { result = RNMapsAMapViewUserInterfaceStyle::System; return; }
+  if (string == "light") { result = RNMapsAMapViewUserInterfaceStyle::Light; return; }
+  if (string == "dark") { result = RNMapsAMapViewUserInterfaceStyle::Dark; return; }
+  abort();
+}
+
+static inline std::string toString(const RNMapsAMapViewUserInterfaceStyle &value) {
+  switch (value) {
+    case RNMapsAMapViewUserInterfaceStyle::System: return "system";
+    case RNMapsAMapViewUserInterfaceStyle::Light: return "light";
+    case RNMapsAMapViewUserInterfaceStyle::Dark: return "dark";
+  }
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewUserInterfaceStyle &value) {
+  return toString(value);
+}
+#endif
+enum class RNMapsAMapViewUserLocationPriority { Balanced, High, Low, Passive };
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewUserLocationPriority &result) {
+  auto string = (std::string)value;
+  if (string == "balanced") { result = RNMapsAMapViewUserLocationPriority::Balanced; return; }
+  if (string == "high") { result = RNMapsAMapViewUserLocationPriority::High; return; }
+  if (string == "low") { result = RNMapsAMapViewUserLocationPriority::Low; return; }
+  if (string == "passive") { result = RNMapsAMapViewUserLocationPriority::Passive; return; }
+  abort();
+}
+
+static inline std::string toString(const RNMapsAMapViewUserLocationPriority &value) {
+  switch (value) {
+    case RNMapsAMapViewUserLocationPriority::Balanced: return "balanced";
+    case RNMapsAMapViewUserLocationPriority::High: return "high";
+    case RNMapsAMapViewUserLocationPriority::Low: return "low";
+    case RNMapsAMapViewUserLocationPriority::Passive: return "passive";
+  }
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewUserLocationPriority &value) {
+  return toString(value);
+}
+#endif
+struct RNMapsAMapViewCameraCenterStruct {
+  double latitude{0.0};
+  double longitude{0.0};
+
+#ifdef RN_SERIALIZABLE_STATE
+  bool operator==(const RNMapsAMapViewCameraCenterStruct&) const = default;
+
+  folly::dynamic toDynamic() const {
+    folly::dynamic result = folly::dynamic::object();
+    result["latitude"] = latitude;
+    result["longitude"] = longitude;
+    return result;
+  }
+#endif
+};
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewCameraCenterStruct &result) {
+  auto map = (std::unordered_map<std::string, RawValue>)value;
+
+  auto tmp_latitude = map.find("latitude");
+  if (tmp_latitude != map.end()) {
+    fromRawValue(context, tmp_latitude->second, result.latitude);
+  }
+  auto tmp_longitude = map.find("longitude");
+  if (tmp_longitude != map.end()) {
+    fromRawValue(context, tmp_longitude->second, result.longitude);
+  }
+}
+
+static inline std::string toString(const RNMapsAMapViewCameraCenterStruct &value) {
+  return "[Object RNMapsAMapViewCameraCenterStruct]";
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewCameraCenterStruct &value) {
+  return value.toDynamic();
+}
+#endif
+
+struct RNMapsAMapViewCameraStruct {
+  double altitude{0.0};
+  RNMapsAMapViewCameraCenterStruct center{};
+  double heading{0.0};
+  double pitch{0.0};
+  Float zoom{0.0};
+
+#ifdef RN_SERIALIZABLE_STATE
+  bool operator==(const RNMapsAMapViewCameraStruct&) const = default;
+
+  folly::dynamic toDynamic() const {
+    folly::dynamic result = folly::dynamic::object();
+    result["altitude"] = altitude;
+    result["center"] = ::facebook::react::toDynamic(center);
+    result["heading"] = heading;
+    result["pitch"] = pitch;
+    result["zoom"] = zoom;
+    return result;
+  }
+#endif
+};
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewCameraStruct &result) {
+  auto map = (std::unordered_map<std::string, RawValue>)value;
+
+  auto tmp_altitude = map.find("altitude");
+  if (tmp_altitude != map.end()) {
+    fromRawValue(context, tmp_altitude->second, result.altitude);
+  }
+  auto tmp_center = map.find("center");
+  if (tmp_center != map.end()) {
+    fromRawValue(context, tmp_center->second, result.center);
+  }
+  auto tmp_heading = map.find("heading");
+  if (tmp_heading != map.end()) {
+    fromRawValue(context, tmp_heading->second, result.heading);
+  }
+  auto tmp_pitch = map.find("pitch");
+  if (tmp_pitch != map.end()) {
+    fromRawValue(context, tmp_pitch->second, result.pitch);
+  }
+  auto tmp_zoom = map.find("zoom");
+  if (tmp_zoom != map.end()) {
+    fromRawValue(context, tmp_zoom->second, result.zoom);
+  }
+}
+
+static inline std::string toString(const RNMapsAMapViewCameraStruct &value) {
+  return "[Object RNMapsAMapViewCameraStruct]";
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewCameraStruct &value) {
+  return value.toDynamic();
+}
+#endif
+
+struct RNMapsAMapViewCompassOffsetStruct {
+  double x{0.0};
+  double y{0.0};
+
+#ifdef RN_SERIALIZABLE_STATE
+  bool operator==(const RNMapsAMapViewCompassOffsetStruct&) const = default;
+
+  folly::dynamic toDynamic() const {
+    folly::dynamic result = folly::dynamic::object();
+    result["x"] = x;
+    result["y"] = y;
+    return result;
+  }
+#endif
+};
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewCompassOffsetStruct &result) {
+  auto map = (std::unordered_map<std::string, RawValue>)value;
+
+  auto tmp_x = map.find("x");
+  if (tmp_x != map.end()) {
+    fromRawValue(context, tmp_x->second, result.x);
+  }
+  auto tmp_y = map.find("y");
+  if (tmp_y != map.end()) {
+    fromRawValue(context, tmp_y->second, result.y);
+  }
+}
+
+static inline std::string toString(const RNMapsAMapViewCompassOffsetStruct &value) {
+  return "[Object RNMapsAMapViewCompassOffsetStruct]";
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewCompassOffsetStruct &value) {
+  return value.toDynamic();
+}
+#endif
+
+struct RNMapsAMapViewInitialCameraCenterStruct {
+  double latitude{0.0};
+  double longitude{0.0};
+
+#ifdef RN_SERIALIZABLE_STATE
+  bool operator==(const RNMapsAMapViewInitialCameraCenterStruct&) const = default;
+
+  folly::dynamic toDynamic() const {
+    folly::dynamic result = folly::dynamic::object();
+    result["latitude"] = latitude;
+    result["longitude"] = longitude;
+    return result;
+  }
+#endif
+};
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewInitialCameraCenterStruct &result) {
+  auto map = (std::unordered_map<std::string, RawValue>)value;
+
+  auto tmp_latitude = map.find("latitude");
+  if (tmp_latitude != map.end()) {
+    fromRawValue(context, tmp_latitude->second, result.latitude);
+  }
+  auto tmp_longitude = map.find("longitude");
+  if (tmp_longitude != map.end()) {
+    fromRawValue(context, tmp_longitude->second, result.longitude);
+  }
+}
+
+static inline std::string toString(const RNMapsAMapViewInitialCameraCenterStruct &value) {
+  return "[Object RNMapsAMapViewInitialCameraCenterStruct]";
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewInitialCameraCenterStruct &value) {
+  return value.toDynamic();
+}
+#endif
+
+struct RNMapsAMapViewInitialCameraStruct {
+  double altitude{0.0};
+  RNMapsAMapViewInitialCameraCenterStruct center{};
+  double heading{0.0};
+  double pitch{0.0};
+  Float zoom{0.0};
+
+#ifdef RN_SERIALIZABLE_STATE
+  bool operator==(const RNMapsAMapViewInitialCameraStruct&) const = default;
+
+  folly::dynamic toDynamic() const {
+    folly::dynamic result = folly::dynamic::object();
+    result["altitude"] = altitude;
+    result["center"] = ::facebook::react::toDynamic(center);
+    result["heading"] = heading;
+    result["pitch"] = pitch;
+    result["zoom"] = zoom;
+    return result;
+  }
+#endif
+};
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewInitialCameraStruct &result) {
+  auto map = (std::unordered_map<std::string, RawValue>)value;
+
+  auto tmp_altitude = map.find("altitude");
+  if (tmp_altitude != map.end()) {
+    fromRawValue(context, tmp_altitude->second, result.altitude);
+  }
+  auto tmp_center = map.find("center");
+  if (tmp_center != map.end()) {
+    fromRawValue(context, tmp_center->second, result.center);
+  }
+  auto tmp_heading = map.find("heading");
+  if (tmp_heading != map.end()) {
+    fromRawValue(context, tmp_heading->second, result.heading);
+  }
+  auto tmp_pitch = map.find("pitch");
+  if (tmp_pitch != map.end()) {
+    fromRawValue(context, tmp_pitch->second, result.pitch);
+  }
+  auto tmp_zoom = map.find("zoom");
+  if (tmp_zoom != map.end()) {
+    fromRawValue(context, tmp_zoom->second, result.zoom);
+  }
+}
+
+static inline std::string toString(const RNMapsAMapViewInitialCameraStruct &value) {
+  return "[Object RNMapsAMapViewInitialCameraStruct]";
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewInitialCameraStruct &value) {
+  return value.toDynamic();
+}
+#endif
+
+struct RNMapsAMapViewInitialRegionStruct {
+  double latitude{0.0};
+  double longitude{0.0};
+  double latitudeDelta{0.0};
+  double longitudeDelta{0.0};
+
+#ifdef RN_SERIALIZABLE_STATE
+  bool operator==(const RNMapsAMapViewInitialRegionStruct&) const = default;
+
+  folly::dynamic toDynamic() const {
+    folly::dynamic result = folly::dynamic::object();
+    result["latitude"] = latitude;
+    result["longitude"] = longitude;
+    result["latitudeDelta"] = latitudeDelta;
+    result["longitudeDelta"] = longitudeDelta;
+    return result;
+  }
+#endif
+};
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewInitialRegionStruct &result) {
+  auto map = (std::unordered_map<std::string, RawValue>)value;
+
+  auto tmp_latitude = map.find("latitude");
+  if (tmp_latitude != map.end()) {
+    fromRawValue(context, tmp_latitude->second, result.latitude);
+  }
+  auto tmp_longitude = map.find("longitude");
+  if (tmp_longitude != map.end()) {
+    fromRawValue(context, tmp_longitude->second, result.longitude);
+  }
+  auto tmp_latitudeDelta = map.find("latitudeDelta");
+  if (tmp_latitudeDelta != map.end()) {
+    fromRawValue(context, tmp_latitudeDelta->second, result.latitudeDelta);
+  }
+  auto tmp_longitudeDelta = map.find("longitudeDelta");
+  if (tmp_longitudeDelta != map.end()) {
+    fromRawValue(context, tmp_longitudeDelta->second, result.longitudeDelta);
+  }
+}
+
+static inline std::string toString(const RNMapsAMapViewInitialRegionStruct &value) {
+  return "[Object RNMapsAMapViewInitialRegionStruct]";
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewInitialRegionStruct &value) {
+  return value.toDynamic();
+}
+#endif
+
+struct RNMapsAMapViewLegalLabelInsetsStruct {
+  double top{0.0};
+  double right{0.0};
+  double bottom{0.0};
+  double left{0.0};
+
+#ifdef RN_SERIALIZABLE_STATE
+  bool operator==(const RNMapsAMapViewLegalLabelInsetsStruct&) const = default;
+
+  folly::dynamic toDynamic() const {
+    folly::dynamic result = folly::dynamic::object();
+    result["top"] = top;
+    result["right"] = right;
+    result["bottom"] = bottom;
+    result["left"] = left;
+    return result;
+  }
+#endif
+};
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewLegalLabelInsetsStruct &result) {
+  auto map = (std::unordered_map<std::string, RawValue>)value;
+
+  auto tmp_top = map.find("top");
+  if (tmp_top != map.end()) {
+    fromRawValue(context, tmp_top->second, result.top);
+  }
+  auto tmp_right = map.find("right");
+  if (tmp_right != map.end()) {
+    fromRawValue(context, tmp_right->second, result.right);
+  }
+  auto tmp_bottom = map.find("bottom");
+  if (tmp_bottom != map.end()) {
+    fromRawValue(context, tmp_bottom->second, result.bottom);
+  }
+  auto tmp_left = map.find("left");
+  if (tmp_left != map.end()) {
+    fromRawValue(context, tmp_left->second, result.left);
+  }
+}
+
+static inline std::string toString(const RNMapsAMapViewLegalLabelInsetsStruct &value) {
+  return "[Object RNMapsAMapViewLegalLabelInsetsStruct]";
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewLegalLabelInsetsStruct &value) {
+  return value.toDynamic();
+}
+#endif
+
+struct RNMapsAMapViewMapPaddingStruct {
+  double top{0.0};
+  double right{0.0};
+  double bottom{0.0};
+  double left{0.0};
+
+#ifdef RN_SERIALIZABLE_STATE
+  bool operator==(const RNMapsAMapViewMapPaddingStruct&) const = default;
+
+  folly::dynamic toDynamic() const {
+    folly::dynamic result = folly::dynamic::object();
+    result["top"] = top;
+    result["right"] = right;
+    result["bottom"] = bottom;
+    result["left"] = left;
+    return result;
+  }
+#endif
+};
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewMapPaddingStruct &result) {
+  auto map = (std::unordered_map<std::string, RawValue>)value;
+
+  auto tmp_top = map.find("top");
+  if (tmp_top != map.end()) {
+    fromRawValue(context, tmp_top->second, result.top);
+  }
+  auto tmp_right = map.find("right");
+  if (tmp_right != map.end()) {
+    fromRawValue(context, tmp_right->second, result.right);
+  }
+  auto tmp_bottom = map.find("bottom");
+  if (tmp_bottom != map.end()) {
+    fromRawValue(context, tmp_bottom->second, result.bottom);
+  }
+  auto tmp_left = map.find("left");
+  if (tmp_left != map.end()) {
+    fromRawValue(context, tmp_left->second, result.left);
+  }
+}
+
+static inline std::string toString(const RNMapsAMapViewMapPaddingStruct &value) {
+  return "[Object RNMapsAMapViewMapPaddingStruct]";
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewMapPaddingStruct &value) {
+  return value.toDynamic();
+}
+#endif
+
+struct RNMapsAMapViewRegionStruct {
+  double latitude{0.0};
+  double longitude{0.0};
+  double latitudeDelta{0.0};
+  double longitudeDelta{0.0};
+
+#ifdef RN_SERIALIZABLE_STATE
+  bool operator==(const RNMapsAMapViewRegionStruct&) const = default;
+
+  folly::dynamic toDynamic() const {
+    folly::dynamic result = folly::dynamic::object();
+    result["latitude"] = latitude;
+    result["longitude"] = longitude;
+    result["latitudeDelta"] = latitudeDelta;
+    result["longitudeDelta"] = longitudeDelta;
+    return result;
+  }
+#endif
+};
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewRegionStruct &result) {
+  auto map = (std::unordered_map<std::string, RawValue>)value;
+
+  auto tmp_latitude = map.find("latitude");
+  if (tmp_latitude != map.end()) {
+    fromRawValue(context, tmp_latitude->second, result.latitude);
+  }
+  auto tmp_longitude = map.find("longitude");
+  if (tmp_longitude != map.end()) {
+    fromRawValue(context, tmp_longitude->second, result.longitude);
+  }
+  auto tmp_latitudeDelta = map.find("latitudeDelta");
+  if (tmp_latitudeDelta != map.end()) {
+    fromRawValue(context, tmp_latitudeDelta->second, result.latitudeDelta);
+  }
+  auto tmp_longitudeDelta = map.find("longitudeDelta");
+  if (tmp_longitudeDelta != map.end()) {
+    fromRawValue(context, tmp_longitudeDelta->second, result.longitudeDelta);
+  }
+}
+
+static inline std::string toString(const RNMapsAMapViewRegionStruct &value) {
+  return "[Object RNMapsAMapViewRegionStruct]";
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewRegionStruct &value) {
+  return value.toDynamic();
+}
+#endif
+
+struct RNMapsAMapViewCameraZoomRangeStruct {
+  double minCenterCoordinateDistance{0.0};
+  double maxCenterCoordinateDistance{0.0};
+  bool animated{false};
+
+#ifdef RN_SERIALIZABLE_STATE
+  bool operator==(const RNMapsAMapViewCameraZoomRangeStruct&) const = default;
+
+  folly::dynamic toDynamic() const {
+    folly::dynamic result = folly::dynamic::object();
+    result["minCenterCoordinateDistance"] = minCenterCoordinateDistance;
+    result["maxCenterCoordinateDistance"] = maxCenterCoordinateDistance;
+    result["animated"] = animated;
+    return result;
+  }
+#endif
+};
+
+static inline void fromRawValue(const PropsParserContext& context, const RawValue &value, RNMapsAMapViewCameraZoomRangeStruct &result) {
+  auto map = (std::unordered_map<std::string, RawValue>)value;
+
+  auto tmp_minCenterCoordinateDistance = map.find("minCenterCoordinateDistance");
+  if (tmp_minCenterCoordinateDistance != map.end()) {
+    fromRawValue(context, tmp_minCenterCoordinateDistance->second, result.minCenterCoordinateDistance);
+  }
+  auto tmp_maxCenterCoordinateDistance = map.find("maxCenterCoordinateDistance");
+  if (tmp_maxCenterCoordinateDistance != map.end()) {
+    fromRawValue(context, tmp_maxCenterCoordinateDistance->second, result.maxCenterCoordinateDistance);
+  }
+  auto tmp_animated = map.find("animated");
+  if (tmp_animated != map.end()) {
+    fromRawValue(context, tmp_animated->second, result.animated);
+  }
+}
+
+static inline std::string toString(const RNMapsAMapViewCameraZoomRangeStruct &value) {
+  return "[Object RNMapsAMapViewCameraZoomRangeStruct]";
+}
+
+#ifdef RN_SERIALIZABLE_STATE
+static inline folly::dynamic toDynamic(const RNMapsAMapViewCameraZoomRangeStruct &value) {
+  return value.toDynamic();
+}
+#endif
+class RNMapsAMapViewProps final : public ViewProps {
+ public:
+  RNMapsAMapViewProps() = default;
+  RNMapsAMapViewProps(const PropsParserContext& context, const RNMapsAMapViewProps &sourceProps, const RawProps &rawProps);
+
+#pragma mark - Props
+
+  bool cacheEnabled{false};
+  RNMapsAMapViewCameraStruct camera{};
+  RNMapsAMapViewCompassOffsetStruct compassOffset{};
+  bool followsUserLocation{false};
+  bool poiClickEnabled{false};
+  RNMapsAMapViewInitialCameraStruct initialCamera{};
+  RNMapsAMapViewInitialRegionStruct initialRegion{};
+  std::string kmlSrc{};
+  RNMapsAMapViewLegalLabelInsetsStruct legalLabelInsets{};
+  bool liteMode{false};
+  std::string googleMapId{};
+  RNMapsAMapViewGoogleRenderer googleRenderer{RNMapsAMapViewGoogleRenderer::LATEST};
+  SharedColor loadingBackgroundColor{};
+  bool loadingEnabled{false};
+  SharedColor loadingIndicatorColor{};
+  RNMapsAMapViewMapPaddingStruct mapPadding{};
+  RNMapsAMapViewMapType mapType{RNMapsAMapViewMapType::Standard};
+  double maxDelta{0.0};
+  Float maxZoom{0.0};
+  double minDelta{0.0};
+  Float minZoom{0.0};
+  bool moveOnMarkerPress{true};
+  bool handlePanDrag{false};
+  RNMapsAMapViewPaddingAdjustmentBehavior paddingAdjustmentBehavior{RNMapsAMapViewPaddingAdjustmentBehavior::Never};
+  bool pitchEnabled{true};
+  RNMapsAMapViewRegionStruct region{};
+  bool rotateEnabled{true};
+  bool scrollDuringRotateOrZoomEnabled{true};
+  bool scrollEnabled{true};
+  bool showsBuildings{true};
+  bool showsCompass{true};
+  bool showsIndoorLevelPicker{false};
+  bool showsIndoors{true};
+  bool showsMyLocationButton{true};
+  bool showsScale{false};
+  bool showsUserLocation{false};
+  SharedColor tintColor{};
+  bool toolbarEnabled{true};
+  RNMapsAMapViewUserInterfaceStyle userInterfaceStyle{RNMapsAMapViewUserInterfaceStyle::System};
+  std::string customMapStyleString{};
+  std::string userLocationAnnotationTitle{};
+  bool userLocationCalloutEnabled{false};
+  int userLocationFastestInterval{5000};
+  RNMapsAMapViewUserLocationPriority userLocationPriority{RNMapsAMapViewUserLocationPriority::High};
+  int userLocationUpdateInterval{5000};
+  bool zoomControlEnabled{true};
+  bool zoomEnabled{true};
+  bool showsTraffic{false};
+  bool zoomTapEnabled{true};
+  RNMapsAMapViewCameraZoomRangeStruct cameraZoomRange{};
+
+  #ifdef RN_SERIALIZABLE_STATE
+  ComponentName getDiffPropsImplementationTarget() const override;
+
+  folly::dynamic getDiffProps(const Props* prevProps) const override;
+  #endif
+};
+
 class RNMapsCalloutProps final : public ViewProps {
  public:
   RNMapsCalloutProps() = default;

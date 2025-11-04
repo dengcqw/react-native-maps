@@ -20,10 +20,10 @@
 
   dispatch_once(&nativeComponentsToken, ^{
     thirdPartyComponents = @{
-		@"RNMapsGoogleMapView": NSClassFromString(@"RNMapsGoogleMapView"), // react-native-maps
-		@"RNMapsGooglePolygon": NSClassFromString(@"RNMapsGooglePolygonView"), // react-native-maps
-		@"RNMapsMapView": NSClassFromString(@"RNMapsMapView"), // react-native-maps
-		@"RNMapsMarker": NSClassFromString(@"RNMapsMarkerView"), // react-native-maps
+		@"RNMapsGoogleMapView": NSClassFromString(@"RNMapsGoogleMapView"), // @jtreact/react-native-maps
+		@"RNMapsGooglePolygon": NSClassFromString(@"RNMapsGooglePolygonView"), // @jtreact/react-native-maps
+		@"RNMapsMapView": NSClassFromString(@"RNMapsMapView"), // @jtreact/react-native-maps
+		@"RNMapsMarker": NSClassFromString(@"RNMapsMarkerView"), // @jtreact/react-native-maps
     };
   });
 

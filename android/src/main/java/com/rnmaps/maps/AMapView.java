@@ -413,7 +413,7 @@ public class AMapView extends com.amap.api.maps.MapView
         cameraLastIdleBounds = null;
         boolean isGesture = false;
 
-        WritableMap payload = OnRegionChangeEvent.payLoadFor(toGoogleLatLngBounds(bounds), true, isGesture);
+        WritableMap payload = OnRegionChangeEvent.payLoadFor(toGoogleLatLngBounds(bounds), isGesture);
         dispatchEvent(payload, OnRegionChangeEvent::new);
     }
 
@@ -424,7 +424,7 @@ public class AMapView extends com.amap.api.maps.MapView
 
             cameraLastIdleBounds = bounds;
             boolean isGesture = false;
-            WritableMap payload = OnRegionChangeEvent.payLoadFor(toGoogleLatLngBounds(bounds), false, isGesture);
+            WritableMap payload = OnRegionChangeEvent.payLoadFor(toGoogleLatLngBounds(bounds), isGesture);
             dispatchEvent(payload, OnRegionChangeCompleteEvent::new);
         }
     }

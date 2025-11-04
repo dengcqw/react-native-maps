@@ -19,6 +19,7 @@ import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
@@ -47,8 +48,8 @@ public class AMapViewManager extends ViewGroupManager<AMapView> implements RNMap
 
     public AMapViewManager(ReactApplicationContext context) {
         super(context);
-//        MapsInitializer.updatePrivacyShow(context,true,true);
-//        MapsInitializer.updatePrivacyAgree(context,true);
+        MapsInitializer.updatePrivacyShow(context,true,true);
+        MapsInitializer.updatePrivacyAgree(context,true);
     }
 
 
@@ -427,6 +428,16 @@ public class AMapViewManager extends ViewGroupManager<AMapView> implements RNMap
     @Override
     public void setShowsIndoors(AMapView view, boolean value) {
         view.setShowIndoors(value);
+    }
+
+    @Override
+    public void setShowsPointsOfInterests(AMapView view, boolean value) {
+
+    }
+
+    @Override
+    public void setPointsOfInterestFilter(AMapView view, @Nullable ReadableArray value) {
+
     }
 
     @Override

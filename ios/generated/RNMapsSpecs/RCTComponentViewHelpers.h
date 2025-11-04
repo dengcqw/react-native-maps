@@ -13,6 +13,222 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol RCTRNMapsAMapViewViewProtocol <NSObject>
+- (void)animateToRegion:(NSString *)regionJSON duration:(NSInteger)duration;
+- (void)setCamera:(NSString *)cameraJSON;
+- (void)animateCamera:(NSString *)cameraJSON duration:(NSInteger)duration;
+- (void)fitToElements:(NSString *)edgePaddingJSON animated:(BOOL)animated;
+- (void)fitToSuppliedMarkers:(NSString *)markersJSON edgePaddingJSON:(NSString *)edgePaddingJSON animated:(BOOL)animated;
+- (void)fitToCoordinates:(NSString *)coordinatesJSON edgePaddingJSON:(NSString *)edgePaddingJSON animated:(BOOL)animated;
+- (void)setIndoorActiveLevelIndex:(NSInteger)activeLevelIndex;
+@end
+
+RCT_EXTERN inline void RCTRNMapsAMapViewHandleCommand(
+  id<RCTRNMapsAMapViewViewProtocol> componentView,
+  NSString const *commandName,
+  NSArray const *args)
+{
+  if ([commandName isEqualToString:@"animateToRegion"]) {
+#if RCT_DEBUG
+  if ([args count] != 2) {
+    RCTLogError(@"%@ command %@ received %d arguments, expected %d.", @"RNMapsAMapView", commandName, (int)[args count], 2);
+    return;
+  }
+#endif
+
+  NSObject *arg0 = args[0];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg0, [NSString class], @"string", @"RNMapsAMapView", commandName, @"1st")) {
+    return;
+  }
+#endif
+  NSString * regionJSON = (NSString *)arg0;
+
+NSObject *arg1 = args[1];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg1, [NSNumber class], @"number", @"RNMapsAMapView", commandName, @"2nd")) {
+    return;
+  }
+#endif
+  NSInteger duration = [(NSNumber *)arg1 intValue];
+
+  [componentView animateToRegion:regionJSON duration:duration];
+  return;
+}
+
+if ([commandName isEqualToString:@"setCamera"]) {
+#if RCT_DEBUG
+  if ([args count] != 1) {
+    RCTLogError(@"%@ command %@ received %d arguments, expected %d.", @"RNMapsAMapView", commandName, (int)[args count], 1);
+    return;
+  }
+#endif
+
+  NSObject *arg0 = args[0];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg0, [NSString class], @"string", @"RNMapsAMapView", commandName, @"1st")) {
+    return;
+  }
+#endif
+  NSString * cameraJSON = (NSString *)arg0;
+
+  [componentView setCamera:cameraJSON];
+  return;
+}
+
+if ([commandName isEqualToString:@"animateCamera"]) {
+#if RCT_DEBUG
+  if ([args count] != 2) {
+    RCTLogError(@"%@ command %@ received %d arguments, expected %d.", @"RNMapsAMapView", commandName, (int)[args count], 2);
+    return;
+  }
+#endif
+
+  NSObject *arg0 = args[0];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg0, [NSString class], @"string", @"RNMapsAMapView", commandName, @"1st")) {
+    return;
+  }
+#endif
+  NSString * cameraJSON = (NSString *)arg0;
+
+NSObject *arg1 = args[1];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg1, [NSNumber class], @"number", @"RNMapsAMapView", commandName, @"2nd")) {
+    return;
+  }
+#endif
+  NSInteger duration = [(NSNumber *)arg1 intValue];
+
+  [componentView animateCamera:cameraJSON duration:duration];
+  return;
+}
+
+if ([commandName isEqualToString:@"fitToElements"]) {
+#if RCT_DEBUG
+  if ([args count] != 2) {
+    RCTLogError(@"%@ command %@ received %d arguments, expected %d.", @"RNMapsAMapView", commandName, (int)[args count], 2);
+    return;
+  }
+#endif
+
+  NSObject *arg0 = args[0];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg0, [NSString class], @"string", @"RNMapsAMapView", commandName, @"1st")) {
+    return;
+  }
+#endif
+  NSString * edgePaddingJSON = (NSString *)arg0;
+
+NSObject *arg1 = args[1];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg1, [NSNumber class], @"boolean", @"RNMapsAMapView", commandName, @"2nd")) {
+    return;
+  }
+#endif
+  BOOL animated = [(NSNumber *)arg1 boolValue];
+
+  [componentView fitToElements:edgePaddingJSON animated:animated];
+  return;
+}
+
+if ([commandName isEqualToString:@"fitToSuppliedMarkers"]) {
+#if RCT_DEBUG
+  if ([args count] != 3) {
+    RCTLogError(@"%@ command %@ received %d arguments, expected %d.", @"RNMapsAMapView", commandName, (int)[args count], 3);
+    return;
+  }
+#endif
+
+  NSObject *arg0 = args[0];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg0, [NSString class], @"string", @"RNMapsAMapView", commandName, @"1st")) {
+    return;
+  }
+#endif
+  NSString * markersJSON = (NSString *)arg0;
+
+NSObject *arg1 = args[1];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg1, [NSString class], @"string", @"RNMapsAMapView", commandName, @"2nd")) {
+    return;
+  }
+#endif
+  NSString * edgePaddingJSON = (NSString *)arg1;
+
+NSObject *arg2 = args[2];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg2, [NSNumber class], @"boolean", @"RNMapsAMapView", commandName, @"3rd")) {
+    return;
+  }
+#endif
+  BOOL animated = [(NSNumber *)arg2 boolValue];
+
+  [componentView fitToSuppliedMarkers:markersJSON edgePaddingJSON:edgePaddingJSON animated:animated];
+  return;
+}
+
+if ([commandName isEqualToString:@"fitToCoordinates"]) {
+#if RCT_DEBUG
+  if ([args count] != 3) {
+    RCTLogError(@"%@ command %@ received %d arguments, expected %d.", @"RNMapsAMapView", commandName, (int)[args count], 3);
+    return;
+  }
+#endif
+
+  NSObject *arg0 = args[0];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg0, [NSString class], @"string", @"RNMapsAMapView", commandName, @"1st")) {
+    return;
+  }
+#endif
+  NSString * coordinatesJSON = (NSString *)arg0;
+
+NSObject *arg1 = args[1];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg1, [NSString class], @"string", @"RNMapsAMapView", commandName, @"2nd")) {
+    return;
+  }
+#endif
+  NSString * edgePaddingJSON = (NSString *)arg1;
+
+NSObject *arg2 = args[2];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg2, [NSNumber class], @"boolean", @"RNMapsAMapView", commandName, @"3rd")) {
+    return;
+  }
+#endif
+  BOOL animated = [(NSNumber *)arg2 boolValue];
+
+  [componentView fitToCoordinates:coordinatesJSON edgePaddingJSON:edgePaddingJSON animated:animated];
+  return;
+}
+
+if ([commandName isEqualToString:@"setIndoorActiveLevelIndex"]) {
+#if RCT_DEBUG
+  if ([args count] != 1) {
+    RCTLogError(@"%@ command %@ received %d arguments, expected %d.", @"RNMapsAMapView", commandName, (int)[args count], 1);
+    return;
+  }
+#endif
+
+  NSObject *arg0 = args[0];
+#if RCT_DEBUG
+  if (!RCTValidateTypeOfViewCommandArgument(arg0, [NSNumber class], @"number", @"RNMapsAMapView", commandName, @"1st")) {
+    return;
+  }
+#endif
+  NSInteger activeLevelIndex = [(NSNumber *)arg0 intValue];
+
+  [componentView setIndoorActiveLevelIndex:activeLevelIndex];
+  return;
+}
+
+#if RCT_DEBUG
+  RCTLogError(@"%@ received command %@, which is not a supported command.", @"RNMapsAMapView", commandName);
+#endif
+}
+
 @protocol RCTRNMapsGoogleMapViewViewProtocol <NSObject>
 - (void)animateToRegion:(NSString *)regionJSON duration:(NSInteger)duration;
 - (void)setCamera:(NSString *)cameraJSON;
