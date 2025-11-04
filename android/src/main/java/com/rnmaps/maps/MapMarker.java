@@ -14,12 +14,17 @@ import android.animation.ObjectAnimator;
 import android.util.Property;
 import android.animation.TypeEvaluator;
 
+import android.os.Handler;
+import android.os.Looper;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.amap.api.maps.AMap;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.AbstractDraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.drawable.ScalingUtils;
@@ -27,6 +32,8 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.DraweeHolder;
+import com.facebook.drawee.view.DraweeView;
+import com.facebook.fresco.ui.common.ControllerListener2;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.image.CloseableStaticBitmap;
@@ -54,6 +61,8 @@ import com.rnmaps.fabric.event.OnDragStartEvent;
 import com.rnmaps.fabric.event.OnPressEvent;
 import com.rnmaps.fabric.event.OnSelectEvent;
 
+import java.lang.ref.SoftReference;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public class MapMarker extends MapFeature {
@@ -93,6 +102,8 @@ public class MapMarker extends MapFeature {
     private float calloutAnchorY;
     private boolean calloutAnchorIsSet;
 
+    private int updated = 0;
+
     private boolean tracksViewChanges = true;
     private boolean tracksViewChangesActive = false;
 
@@ -100,6 +111,10 @@ public class MapMarker extends MapFeature {
     private final MapMarkerManager markerManager;
     private String imageUri;
     private boolean loadingImage;
+
+    private SoftReference<MarkerManager.Collection> markerCollectionRef;
+
+
 
     private final DraweeHolder<?> logoHolder;
     private ImageManager.OnImageLoadedListener imageLoadedListener;
@@ -207,6 +222,16 @@ public class MapMarker extends MapFeature {
         update(false);
     }
 
+    public void doDestroy() {
+        MarkerManager.Collection collection = markerCollectionRef != null
+                ? markerCollectionRef.get()
+                : null;
+
+        if (collection != null) {
+            this.removeFromMap(collection);
+        }
+        markerCollectionRef = null;
+    }
     public String getIdentifier() {
         return this.identifier;
     }
@@ -287,7 +312,7 @@ public class MapMarker extends MapFeature {
 
     public void setMarkerHue(float markerHue) {
         this.markerHue = markerHue;
-        update(false);
+        update(true);
     }
 
     public void setAnchor(double x, double y) {
@@ -310,9 +335,6 @@ public class MapMarker extends MapFeature {
         if (marker != null) {
             marker.setInfoWindowAnchor(calloutAnchorX, calloutAnchorY);
         }
-        if (amarker != null) {
-        }
-
         update(false);
     }
 
@@ -345,11 +367,15 @@ public class MapMarker extends MapFeature {
     }
 
     public boolean updateCustomForTracking() {
-        if (!tracksViewChangesActive)
+        if (!tracksViewChangesActive || updated == 0) {
+            tracksViewChangesActive = false;
             return false;
+        }
 
         updateMarkerIcon();
-
+        if (updated > 0) {
+            updated--;
+        }
         return true;
     }
 
@@ -534,8 +560,66 @@ public class MapMarker extends MapFeature {
         if (!(child instanceof MapCallout)) {
             hasCustomMarkerView = true;
             updateTracksViewChanges();
+            hackToHandleDraweeLifecycle(child);
         }
         update(true);
+    }
+    private void hackToHandleDraweeLifecycle(View child){
+        if (child instanceof DraweeView<?>) {
+            try {
+                DraweeView draweeView = (DraweeView) child;
+
+                Method onAttachMethod = DraweeView.class.getDeclaredMethod("onAttachedToWindow");
+                onAttachMethod.setAccessible(true);
+                onAttachMethod.invoke(child);
+
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+
+                if (draweeView.getController() instanceof AbstractDraweeController<?,?>){
+                    AbstractDraweeController abstractController = (AbstractDraweeController) draweeView.getController();
+
+                    abstractController.addControllerListener2(new ControllerListener2() {
+                        @Override
+                        public void onSubmit(@NonNull String s, @Nullable Object o, @Nullable Extras extras) {
+
+                        }
+
+                        @Override
+                        public void onFinalImageSet(@NonNull String s, @Nullable Object o, @Nullable Extras extras) {
+                            mainHandler.postDelayed(() -> update(true), ((GenericDraweeHierarchy) draweeView.getHierarchy()).getFadeDuration());
+                        }
+
+                        @Override
+                        public void onIntermediateImageSet(@NonNull String s, @Nullable Object o) {
+                            mainHandler.post(() -> update(true));
+                        }
+
+                        @Override
+                        public void onIntermediateImageFailed(@NonNull String s) {
+
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull String s, @Nullable Throwable throwable, @Nullable Extras extras) {
+
+                        }
+
+                        @Override
+                        public void onRelease(@NonNull String s, @Nullable Extras extras) {
+
+                        }
+
+                        @Override
+                        public void onEmptyEvent(@Nullable Object o) {
+
+                        }
+                    });
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -548,6 +632,14 @@ public class MapMarker extends MapFeature {
                 clearDrawableCache();
                 updateTracksViewChanges();
                 update(true);
+            }
+        } else {
+            // custom subview
+            if (!(getChildAt(0) instanceof MapCallout)) {
+                if (updated == 0) {
+                    updated = 1;
+                    updateTracksViewChanges();
+                }
             }
         }
     }
@@ -657,13 +749,25 @@ public class MapMarker extends MapFeature {
                 marker.setInfoWindowAnchor(0.5f, 0);
             }
         }
+        updated += 1;
     }
 
     public void update(int width, int height) {
         this.width = width;
         this.height = height;
-
+        updated += 1;
+        updateTracksViewChanges();
+        clearDrawableCache();
         update(true);
+    }
+
+    public void redraw() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                updateMarkerIcon();
+            }
+        });
     }
 
     private Bitmap mLastBitmapCreated = null;
@@ -675,7 +779,6 @@ public class MapMarker extends MapFeature {
     private Bitmap createDrawable() {
         int width = this.width <= 0 ? 100 : this.width;
         int height = this.height <= 0 ? 100 : this.height;
-        this.buildDrawingCache();
 
         // Do not create the doublebuffer-bitmap each time. reuse it to save memory.
         Bitmap bitmap = mLastBitmapCreated;
@@ -781,6 +884,14 @@ public class MapMarker extends MapFeature {
         this.imageLoadedListener = imageLoadedListener;
     }
 
+    public void setUpdated(boolean updated) {
+        if (updated) {
+            this.updated += 1;
+        } else {
+            this.updated = 0;
+        }
+    }
+
     @FunctionalInterface
     public interface EventCreator<T extends Event> {
         T create(int surfaceId, int viewId, WritableMap payload);
@@ -801,9 +912,9 @@ public class MapMarker extends MapFeature {
         }
     }
 
-//    private BitmapDescriptor getBitmapDescriptorByName(String name) {
-//        return BitmapDescriptorFactory.fromResource(getDrawableResourceByName(name));
-//    }
+    private BitmapDescriptor getBitmapDescriptorByName(String name) {
+        return BitmapDescriptorFactory.fromResource(getDrawableResourceByName(name));
+    }
 
     public static Map<String, Object> getExportedCustomBubblingEventTypeConstants() {
         MapBuilder.Builder<String, Object> builder = MapBuilder.builder();
@@ -821,4 +932,10 @@ public class MapMarker extends MapFeature {
         );
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        this.height = b - t;
+        this.width = r - l;
+    }
 }
