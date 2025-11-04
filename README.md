@@ -16,22 +16,23 @@ See [Setup Instructions for the Included Example Project](docs/examples-setup.md
 
 ## React Native Compatibility
 
-### Important Notes:
-
-- **Fabric is now supported**:  
-  Fabric is now supported for the latest version of the library, if you don't have Fabric (New Arch) enabled, please use v1.21.0 or earlier
-
 ### Version Requirements:
 
-#### Fabric Only
+## Compatibility
 
-- **Version `1.22.0` and below**: Requires **React Native `>= 0.76`**.
+### Fabric (New Architecture)
 
-#### Old Arch
+| Version          | React Native Requirement |
+| ---------------- | ------------------------ |
+| 1.26.1+          | >= 0.81.1                |
+| 1.26.0 and below | >= 0.76                  |
 
-- **Version `1.21.0` and below**: Requires **React Native `>= 0.74`**.
-- **Version `1.14.0` and above**: Requires **React Native `>= 0.74`**.
-- **Versions below `1.14.0`**: Require **React Native `>= 0.64.3`**.
+### Old Architecture
+
+| Version         | React Native Requirement |
+| --------------- | ------------------------ |
+| 1.14.0 - 1.20.1 | >= 0.74                  |
+| < 1.14.0        | >= 0.64.3                |
 
 ## Component API
 
@@ -213,57 +214,6 @@ For Android: add the following line in your AndroidManifest.xml
 ```
 
 For IOS: configure [App Transport Security](https://developer.apple.com/library/content/documentation/General/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html#//apple_ref/doc/uid/TP40009251-SW33) in your app
-
-## React Native Configuration for Fabric / New Architecture
-
-This library doesn't support the new arch yet due to issues with inserting subviews / interoplayer. we're working on it.
-
-### Configuration Steps
-
-1. **Open your configuration file**: Locate the `react-native-config` file in your project directory.
-
-2. **Add the following configuration**: Include the `unstable_reactLegacyComponentNames` array for both Android and iOS platforms as shown below:
-
-```javascript
-module.exports = {
-  project: {
-    android: {
-      unstable_reactLegacyComponentNames: [
-        'AIRMap',
-        'AIRMapCallout',
-        'AIRMapCalloutSubview',
-        'AIRMapCircle',
-        'AIRMapHeatmap',
-        'AIRMapLocalTile',
-        'AIRMapMarker',
-        'AIRMapOverlay',
-        'AIRMapPolygon',
-        'AIRMapPolyline',
-        'AIRMapUrlTile',
-        'AIRMapWMSTile',
-      ],
-    },
-    ios: {
-      unstable_reactLegacyComponentNames: [
-        'AIRMap',
-        'AIRMapCallout',
-        'AIRMapCalloutSubview',
-        'AIRMapCircle',
-        'AIRMapHeatmap',
-        'AIRMapLocalTile',
-        'AIRMapMarker',
-        'AIRMapOverlay',
-        'AIRMapPolygon',
-        'AIRMapPolyline',
-        'AIRMapUrlTile',
-        'AIRMapWMSTile',
-      ],
-    },
-  },
-};
-```
-
-checkout the example project to see it in action.
 
 #### Tile Overlay using local tiles
 

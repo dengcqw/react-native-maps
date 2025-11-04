@@ -134,6 +134,7 @@ public class MarkerManager extends ViewGroupManager<MapMarker> implements RNMaps
         double x = map != null && map.hasKey("x") ? map.getDouble("x") : 0.5;
         double y = map != null && map.hasKey("y") ? map.getDouble("y") : 1.0;
         view.setAnchor(x, y);
+        view.setUpdated(true);
     }
 
     @Override
@@ -143,7 +144,18 @@ public class MarkerManager extends ViewGroupManager<MapMarker> implements RNMaps
 
     @Override
     public void setImage(MapMarker view, @Nullable ReadableMap value) {
-        view.setImage(value.getString("uri"));
+        if (value != null && value.hasKey("uri")) {
+            view.setImage(value.getString("uri"));
+        } else {
+            view.setImage(null);
+        }
+        view.setUpdated(true);
+    }
+
+    @Override
+    public void onDropViewInstance(MapMarker view) {
+        super.onDropViewInstance(view);
+        view.doDestroy();
     }
 
     @Override
@@ -157,28 +169,42 @@ public class MarkerManager extends ViewGroupManager<MapMarker> implements RNMaps
     }
 
     @Override
+    public void setCenterOffset(MapMarker view, @Nullable ReadableMap value) {
+    }
+
+    @Override
     public void setCoordinate(MapMarker view, @Nullable ReadableMap value) {
         view.setCoordinate(value);
+        view.setUpdated(true);
     }
 
     @Override
     public void setDescription(MapMarker view, @Nullable String value) {
         view.setSnippet(value);
+        view.setUpdated(true);
     }
 
     @Override
     public void setDraggable(MapMarker view, boolean value) {
         view.setDraggable(value);
+        view.setUpdated(true);
     }
 
     @Override
     public void setTitle(MapMarker view, @Nullable String value) {
         view.setTitle(value);
+        view.setUpdated(true);
+    }
+
+    @Override
+    public void setTracksViewChanges(MapMarker view, boolean value) {
+        view.setTracksViewChanges(value);
     }
 
     @Override
     public void setIdentifier(MapMarker view, @Nullable String value) {
         view.setIdentifier(value);
+        view.setUpdated(true);
     }
 
     @Override
@@ -189,6 +215,7 @@ public class MarkerManager extends ViewGroupManager<MapMarker> implements RNMaps
     @Override
     public void setOpacity(MapMarker view, double value) {
         view.setOpacity((float) value);
+        view.setUpdated(true);
     }
 
     @Override
@@ -197,6 +224,7 @@ public class MarkerManager extends ViewGroupManager<MapMarker> implements RNMaps
         Color.colorToHSV(value, hsv);
         // NOTE: android only supports a hue
         view.setMarkerHue(hsv[0]);
+        view.setUpdated(true);
     }
 
     @Override
@@ -221,18 +249,20 @@ public class MarkerManager extends ViewGroupManager<MapMarker> implements RNMaps
 
     @Override
     public void setCoordinates(MapMarker view, double latitude, double longitude) {
-            view.setCoordinate(new LatLng(latitude, longitude));
+        view.setCoordinate(new LatLng(latitude, longitude));
+        view.setUpdated(true);
     }
 
     @Override
     public void showCallout(MapMarker view) {
         ((Marker) view.getFeature()).showInfoWindow();
-
+        view.setUpdated(true);
     }
 
     @Override
     public void hideCallout(MapMarker view) {
         ((Marker) view.getFeature()).hideInfoWindow();
+        view.setUpdated(true);
     }
 
     @Override
@@ -242,8 +272,9 @@ public class MarkerManager extends ViewGroupManager<MapMarker> implements RNMaps
 
     @Override
     public void redraw(MapMarker view) {
-
+        view.redraw();
     }
+
     @Override
     public void addView(MapMarker parent, View child, int index) {
         // if an <Callout /> component is a child, then it is a callout view, NOT part of the
@@ -252,6 +283,19 @@ public class MarkerManager extends ViewGroupManager<MapMarker> implements RNMaps
             parent.setCalloutView((MapCallout) child);
         } else {
             super.addView(parent, child, index);
+            if (index == 0) {
+                child.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        int newWidth = right - left;
+                        int newHeight = bottom - top;
+                        MapMarker marker = (MapMarker) v.getParent();
+                        if(marker != null){
+                            marker.update(newWidth, newHeight);
+                        }
+                    }
+                });
+            }
             parent.update(true);
         }
     }

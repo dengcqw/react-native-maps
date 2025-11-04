@@ -1,11 +1,13 @@
 {
   "name": "@jtreact/react-native-maps",
   "description": "React Native Mapview component for iOS + Android",
+  "react-native": "src/index",
   "source": "src/index",
   "main": "src/index.ts",
+  "types": "dist/src/index.d.ts",
   "author": "Leland Richardson <leland.m.richardson@gmail.com>",
   "homepage": "https://github.com/react-native-maps/react-native-maps#readme",
-  "version": "0.0.2",
+  "version": "0.0.0",
   "license": "MIT",
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -13,6 +15,7 @@
     "format-check": "prettier --check .",
     "build": "tsc --project tsconfig.build.json && tsc --project plugin/tsconfig.json",
     "test": "jest",
+    "prepare": "husky",
     "release": "semantic-release",
     "bundle-install": "cd example && bundle install",
     "pod-install": "cd example/ios && RCT_NEW_ARCH_ENABLED=1 bundle exec pod install",
@@ -20,6 +23,7 @@
   },
   "files": [
     "src",
+    "dist",
     "android",
     "ios",
     "app.plugin.js",
@@ -36,10 +40,18 @@
     "type": "git",
     "url": "https://github.com/react-native-maps/react-native-maps"
   },
-  "keywords": ["react", "react-native", "react-component", "map", "mapview", "google-maps", "mapkit"],
+  "keywords": [
+    "react",
+    "react-native",
+    "react-component",
+    "map",
+    "mapview",
+    "google-maps",
+    "mapkit"
+  ],
   "peerDependencies": {
-    "react": ">= 19.0.0",
-    "react-native": ">= 0.79.0",
+    "react": ">= 18.3.1",
+    "react-native": ">= 0.76.0",
     "react-native-web": ">= 0.11"
   },
   "peerDependenciesMeta": {
@@ -54,32 +66,40 @@
     "@commitlint/cli": "19.8.0",
     "@commitlint/config-conventional": "19.8.0",
     "@expo/config-plugins": "^9.0.17",
-    "@react-native-community/cli": "15.0.1",
-    "@react-native/babel-preset": "0.76.8",
-    "@react-native/eslint-config": "0.76.8",
-    "@react-native/metro-config": "0.76.8",
-    "@react-native/typescript-config": "0.76.8",
+    "@react-native-community/cli": "20.0.0",
+    "@react-native/babel-preset": "0.81.0",
+    "@react-native/eslint-config": "0.81.0",
+    "@react-native/metro-config": "0.81.0",
+    "@react-native/typescript-config": "0.81.0",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/git": "10.0.1",
-    "@types/react": "^18.2.6",
-    "@types/react-test-renderer": "^18.0.0",
-    "babel-jest": "^29.6.3",
+    "@types/react": "^19.1.0",
+    "@types/react-test-renderer": "^19.1.0",
+    "@types/jest": "^29.5.13",
     "eslint": "^8.19.0",
+    "husky": "9.1.7",
     "jest": "^29.6.3",
     "prettier": "2.8.8",
-    "react-test-renderer": "18.3.1",
+    "react": "19.1.0",
+    "react-native": "^0.81.1",
+    "react-test-renderer": "19.1.0",
     "semantic-release": "24.2.3",
-    "typescript": "5.0.4"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@types/geojson": "^7946.0.13"
   },
   "commitlint": {
-    "extends": ["@commitlint/config-conventional"]
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "jest": {
     "preset": "react-native",
-    "testPathIgnorePatterns": ["/node_modules/", "e2e"]
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "e2e"
+    ]
   },
   "codegenConfig": {
     "name": "RNMapsSpecs",
@@ -92,9 +112,17 @@
     "includesGeneratedCode": true,
     "android": {
       "javaPackageName": "com.rnmaps.fabric"
+    },
+    "ios": {
+      "componentProvider": {
+        "RNMapsGoogleMapView": "RNMapsGoogleMapView",
+        "RNMapsGooglePolygon": "RNMapsGooglePolygonView",
+        "RNMapsMapView": "RNMapsMapView",
+        "RNMapsMarker": "RNMapsMarkerView"
+      }
     }
   },
   "engines": {
-    "node": ">=18"
+    "node": ">= 20.19.4"
   }
 }

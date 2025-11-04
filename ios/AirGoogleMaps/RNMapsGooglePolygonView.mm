@@ -12,7 +12,7 @@
 #import "AIRGoogleMap.h"
 #if __has_include(<ReactNativeMaps/generated/RNMapsAirModuleDelegate.h>)
 #import <ReactNativeMaps/generated/RNMapsSpecs.h>
-#import <ReactNativeMaps/generated/RNMapsHostVewDelegate.h>
+#import <ReactNativeMaps/generated/RNMapsHostViewDelegate.h>
 #import <ReactNativeMaps/generated/ComponentDescriptors.h>
 #import <ReactNativeMaps/generated/EventEmitters.h>
 #import <ReactNativeMaps/generated/Props.h>
@@ -206,9 +206,9 @@ bool areHolesEqual(const std::vector<std::vector<RNMapsGooglePolygonHolesStruct>
     if (newViewProps.strokeColor){
         _view.strokeColor = RCTUIColorFromSharedColor(newViewProps.strokeColor);
     }
-
-
-
+    if (newViewProps.strokeWidth != oldViewProps.strokeWidth){
+        _view.strokeWidth = newViewProps.strokeWidth;
+    }
 
   [super updateProps:props oldProps:oldProps];
 }

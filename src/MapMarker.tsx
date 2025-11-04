@@ -468,7 +468,12 @@ export class MapMarker extends React.Component<MapMarkerProps> {
 
   redraw() {
     if (this.marker.current) {
-      Commands.redraw(this.marker.current);
+      if (this.fabricMarker) {
+        // @ts-ignore
+        FabricCommands.redraw(this.marker.current);
+      } else {
+        Commands.redraw(this.marker.current);
+      }
     }
   }
 
@@ -481,13 +486,29 @@ export class MapMarker extends React.Component<MapMarkerProps> {
       );
     }
 
-    let icon;
-    if (this.props.icon && this.fabricMarker) {
-      icon = fixImageProp(this.props.icon);
-    }
-    let image;
-    if (this.props.image && this.fabricMarker) {
-      image = fixImageProp(this.props.image);
+    let icon: any = this.props.icon;
+    let image: any = this.props.image;
+
+    if (this.fabricMarker) {
+      if (this.props.image) {
+        image = fixImageProp(this.props.image);
+      }
+      if (this.props.icon) {
+        icon = fixImageProp(this.props.icon);
+      }
+    } else {
+      if (this.props.image) {
+        image = fixImageProp(this.props.image);
+        if (image.uri) {
+          image = image.uri;
+        }
+      }
+      if (this.props.icon) {
+        icon = fixImageProp(this.props.icon);
+        if (icon.uri) {
+          icon = icon.uri;
+        }
+      }
     }
 
     const AIRMapMarker = this.getNativeComponent();

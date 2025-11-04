@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type {HostComponent} from 'react-native';
 import type {
   ViewProps,
@@ -5,8 +6,7 @@ import type {
   ImageSourcePropType as ImageSource,
 } from 'react-native';
 
-import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
+import {codegenNativeComponent, codegenNativeCommands} from 'react-native';
 import type {
   Int32,
   Double,
@@ -133,6 +133,19 @@ export interface MarkerFabricNativeProps extends ViewProps {
   displayPriority?: WithDefault<AppleMarkerPriority, 'required'>;
 
   /**
+   * The offset (in points) at which to display the annotation view.
+   *
+   * By default, the center point of an annotation view is placed at the coordinate point of the associated annotation.
+   *
+   * Positive offset values move the annotation view down and to the right, while negative values move it up and to the left.
+   *
+   * @default {x: 0.0, y: 0.0}
+   * @platform iOS: Apple Maps only. For Google Maps, see the `anchor` prop
+   * @platform Android: Not supported. see the `anchor` prop
+   */
+  centerOffset?: Point;
+
+  /**
    * The coordinate for the marker.
    *
    * @platform iOS: Supported
@@ -172,6 +185,16 @@ export interface MarkerFabricNativeProps extends ViewProps {
    * @platform Android: Supported
    */
   title?: string;
+
+  /**
+   * Sets whether this marker should track view changes.
+   * It's recommended to turn it off whenever it's possible to improve custom marker performance.
+   *
+   * @default true
+   * @platform iOS: Google Maps only
+   * @platform Android: Supported
+   */
+  tracksViewChanges?: WithDefault<boolean, true>;
 
   /**
    * A string that can be used to identify this marker.

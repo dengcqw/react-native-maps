@@ -11,13 +11,13 @@
 #import "AIRMapMarker.h"
 #import "AIRMapMarkerManager.h"
 #if __has_include(<ReactNativeMaps/generated/RNMapsAirModuleDelegate.h>)
-#import <ReactNativeMaps/generated/RNMapsHostVewDelegate.h>
+#import <ReactNativeMaps/generated/RNMapsHostViewDelegate.h>
 #import <ReactNativeMaps/generated/ComponentDescriptors.h>
 #import <ReactNativeMaps/generated/EventEmitters.h>
 #import <ReactNativeMaps/generated/Props.h>
 #import <ReactNativeMaps/generated/RCTComponentViewHelpers.h>
 #else
-#import "../generated/RNMapsHostVewDelegate.h"
+#import "../generated/RNMapsHostViewDelegate.h"
 #import "../generated/RNMapsSpecs/ComponentDescriptors.h"
 #import "../generated/RNMapsSpecs/EventEmitters.h"
 #import "../generated/RNMapsSpecs/Props.h"
@@ -367,8 +367,9 @@ _view.name = CGPointMake(newViewProps.name.x, newViewProps.name.y); \
 
     REMAP_MAPVIEW_COLOR_PROP(pinColor)
 
-
     REMAP_MAPVIEW_POINT_PROP(calloutOffset)
+    REMAP_MAPVIEW_POINT_PROP(centerOffset)
+
     if (newViewProps.coordinate.latitude != oldViewProps.coordinate.latitude ||
         newViewProps.coordinate.longitude != oldViewProps.coordinate.longitude) {
         CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(
