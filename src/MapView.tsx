@@ -61,12 +61,15 @@ import FabricMapView, {
   Commands as FabricCommands,
   type MapFabricNativeProps,
 } from './specs/NativeComponentMapView';
+import FabricAMapView from './specs/NativeComponentAMapView';
 import GoogleMapView, {
   Commands as GoogleCommands,
 } from './specs/NativeComponentGoogleMapView';
 import createFabricMap, {type FabricMapHandle} from './createFabricMap';
 
 const FabricMap = createFabricMap(FabricMapView, FabricCommands);
+const FabricAMap = createFabricMap(FabricAMapView, FabricCommands);
+
 var FabricGoogleMap: any = null;
 if (Platform.OS === 'ios') {
   FabricGoogleMap = createFabricMap(GoogleMapView, GoogleCommands);
@@ -85,6 +88,11 @@ export const MAP_TYPES: MapTypes = {
 };
 
 export type MapViewProps = ViewProps & {
+  /*
+   * Android use 高德地图
+   */
+  useGaode?: boolean;
+
   /**
    * If `true` map will be cached and displayed as an image instead of being interactable, for performance usage.
    *
@@ -1151,6 +1159,7 @@ class MapView extends React.Component<MapViewProps, State> {
       provider,
       children,
       customMapStyle,
+      useGaode,
       ...restProps
     } = this.props;
 
@@ -1206,7 +1215,15 @@ class MapView extends React.Component<MapViewProps, State> {
 
     const childrenNodes = this.state.isReady ? children : null;
 
-    if (provider === 'google' && Platform.OS === 'ios') {
+    if (useGaode === true && Platform.OS === 'android') {
+      return (
+        <ProviderContext.Provider value={this.props.provider}>
+          <FabricAMap {...props} ref={this.fabricMap}>
+            {childrenNodes}
+          </FabricAMap>
+        </ProviderContext.Provider>
+      )
+    } else if (provider === 'google' && Platform.OS === 'ios') {
       return (
         <ProviderContext.Provider value={this.props.provider}>
           <FabricGoogleMap {...props} ref={this.fabricMap}>
